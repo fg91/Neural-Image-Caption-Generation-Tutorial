@@ -46,7 +46,7 @@ for i in range(args.startIdx, args.endIdx + 1, 1):
     result = get_image_w_caption(captions_and_links, SUB_PATH, i)
     if result is not None:
         images[i] = result
-    if i % 1000 == 0:
+    if i % 1000 == 1:
         pickle.dump(images,
                     (PATH/('dict_' + str(args.startIdx)
                            + '-' + str(args.endIdx) + '.pkl')).open('wb'))
