@@ -61,7 +61,7 @@ class BeamSearch():
     def __call__(self, img, verbose=False):
         """Performs the Beam search
         Args:
-          inp_seq: the input sequence to be encoded
+          img: the image to be annotated, torch tensor with 3 color channels
           verbose: bool, allows printing the intermediate hypotheses for better understanding
         
         Returns:
