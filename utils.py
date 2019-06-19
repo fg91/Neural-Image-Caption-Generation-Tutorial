@@ -20,10 +20,10 @@ def show_img(im, figsize=None, ax=None, alpha=1, cmap=None):
     ax.get_yaxis().set_visible(False)
     return ax
 
-def visualize_attention(im, pred, alphas, denorm, vocab, att_size=14, sz=224):                                                       
+def visualize_attention(im, pred, alphas, denorm, vocab, att_size=7, thresh=0., sz=224):
     cap_len = len(pred)
     alphas = alphas.view(-1,1,  att_size, att_size).cpu().data.numpy()
-    alphas = np.maximum(0, alphas)
+    alphas = np.maximum(thresh, alphas)
     alphas -= alphas.min()
     alphas /= alphas.max()
  
