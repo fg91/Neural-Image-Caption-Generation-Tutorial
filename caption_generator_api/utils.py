@@ -4,6 +4,39 @@ from matplotlib.patheffects import Stroke, Normal
 import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
+
+# the functions fig2data and fig2img are taken from 
+# http://www.icare.univ-lille1.fr/tutorials/convert_a_matplotlib_figure
+# Deprecation errors have been fixed
+
+def fig2data ( fig ):
+    """
+    @brief Convert a Matplotlib figure to a 4D numpy array with RGBA channels and return it
+    @param fig a matplotlib figure
+    @return a numpy 3D array of RGBA values
+    """
+    # draw the renderer
+    fig.canvas.draw ( )
+ 
+    # Get the RGBA buffer from the figure
+    w,h = fig.canvas.get_width_height()
+    buf = np.fromstring( fig.canvas.tostring_argb(), dtype=np.uint8 )
+    buf.shape = ( w, h,4 )
+ 
+    # canvas.tostring_argb give pixmap in ARGB mode. Roll the ALPHA channel to have it in RGBA mode
+    buf = np.roll ( buf, 3, axis = 2 )
+    return buf
+
+def fig2img ( fig ):
+    """
+    @brief Convert a Matplotlib figure to a PIL Image in RGBA format and return it
+    @param fig a matplotlib figure
+    @return a Python Imaging Library ( PIL ) image
+    """
+    # put the figure pixmap into a numpy array
+    buf = fig2data ( fig )
+    w, h, d = buf.shape
+    return Image.frombytes( "RGBA", ( w ,h ), buf.tostring( ) )
     
 def draw_text(ax, xy, txt, sz=14):
     text = ax.text(*xy, txt, verticalalignment='top', color='white', fontsize=sz, weight='bold')
@@ -20,7 +53,7 @@ def show_img(im, figsize=None, ax=None, alpha=1, cmap=None):
     ax.get_yaxis().set_visible(False)
     return ax
 
-def visualize_attention(im, pred, alphas, denorm, vocab, att_size=7, thresh=0., sz=224):
+def visualize_attention(im, pred, alphas, denorm, vocab, att_size=7, thresh=0., sz=224, return_fig_as_PIL_image=False):
     cap_len = len(pred)
     alphas = alphas.view(-1,1,  att_size, att_size).cpu().data.numpy()
     alphas = np.maximum(thresh, alphas)
@@ -40,3 +73,8 @@ def visualize_attention(im, pred, alphas, denorm, vocab, att_size=7, thresh=0., 
         else:
             ax.axis('off')
     plt.tight_layout()
+
+    if return_fig_as_PIL_image:
+        return fig2img(figure)
+
+

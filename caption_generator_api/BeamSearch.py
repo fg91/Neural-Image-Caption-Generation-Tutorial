@@ -41,7 +41,7 @@ class HypothesisNode():
 
 class BeamSearch():
     """ Performs BeamSearch for seq2seq decoding or Image captioning """
-    def __init__(self, enc_model, dec_model, beam_width=5, num_results=1, max_len=30):
+    def __init__(self, enc_model, dec_model, beam_width=5, num_results=1, max_len=30, device=torch.device('cuda:0')):
         """BeamSearch object constructor
         Args:
           enc_model: A seq2seq encoder or cnn for image captioning
@@ -49,6 +49,7 @@ class BeamSearch():
           beam_width: int, the number of hypotheses to remember in each iteration
           max_len: int, the longest possible sequence
         """
+        self._device = device
         self._enc_model = enc_model
         self._dec_model = dec_model
         self._beam_width = beam_width
@@ -71,7 +72,7 @@ class BeamSearch():
         h, annotation_vecs = self._enc_model(img)
         self._annotation_vecs = annotation_vecs
         
-        hyps = [HypothesisNode([torch.zeros(1, requires_grad=False).long().cuda()], 0, h, [])]
+        hyps = [HypothesisNode([torch.zeros(1, requires_grad=False).long().to(self._device)], 0, h, [])]
         results = []
         
         step = 0
