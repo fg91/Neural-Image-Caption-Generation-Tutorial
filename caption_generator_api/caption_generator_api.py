@@ -1,5 +1,5 @@
 import matplotlib
-matplotlib.use("tkagg")  # so that import pyplot does not try to pull in a GUI
+matplotlib.use("Agg")  # so that import pyplot does not try to pull in a GUI
 from flask import Flask, request, send_file
 from flasgger import Swagger
 #from fastai.text import *
