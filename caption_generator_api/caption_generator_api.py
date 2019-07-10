@@ -11,8 +11,7 @@ from BeamSearch import *
 import torch
 import time
 
-#device = torch.device('cpu')
-device = torch.device('cuda:0')
+device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
 
 app = Flask(__name__)
 app.config['SWAGGER'] = {
